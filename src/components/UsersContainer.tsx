@@ -9,11 +9,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { PlusIcon, SearchIcon, Funnel, EllipsisVertical } from "lucide-react";
+import { PlusIcon, SearchIcon, Funnel } from "lucide-react";
 import Image from "next/image";
 import { useModalStore } from "@/stores/useModalStore";
 import { useUserStore } from "@/stores/useUsersStore";
 import { formatCreatedAt } from "@/utils/date";
+import EllipseMenu from "./EllipseMenu";
 
 export default function UsersContainer() {
   const { users } = useUserStore();
@@ -107,7 +108,7 @@ export default function UsersContainer() {
                     {formatCreatedAt(user.createdAt)}
                   </TableCell>
                   <TableCell className="w-[10%]">
-                    <EllipsisVertical className="text-gray-400 cursor-pointer" />
+                    <EllipseMenu user={user} />
                   </TableCell>
                 </TableRow>
               ))

@@ -1,13 +1,19 @@
 "use client";
 import { AddUserModal } from "@/components/AddUserModal";
 import ContentArea from "@/components/ContentArea";
+import { DeleteUserModal } from "@/components/DeleteUserModal";
 import Sidebar from "@/components/sidebar";
 import { useSidebarStore } from "@/stores/useCollapseSidebarStore";
 import { useModalStore } from "@/stores/useModalStore";
 
 export default function Home() {
   const { isCollapsed } = useSidebarStore();
-  const { showAddUserModal, setShowAddUserModal } = useModalStore();
+  const {
+    showAddUserModal,
+    setShowAddUserModal,
+    showDeleteUserModal,
+    setShowDeleteUserModal,
+  } = useModalStore();
   return (
     <div className="flex h-screen w-full bg-[#f2f2f2]">
       <div
@@ -23,6 +29,11 @@ export default function Home() {
       <AddUserModal
         open={showAddUserModal}
         onOpenChange={setShowAddUserModal}
+      />
+
+      <DeleteUserModal
+        userId={showDeleteUserModal}
+        onOpenChange={setShowDeleteUserModal}
       />
     </div>
   );
