@@ -11,25 +11,21 @@ import {
 } from "@/components/ui/table";
 import { PlusIcon, SearchIcon, Funnel, EllipsisVertical } from "lucide-react";
 import Image from "next/image";
+import { useModalStore } from "@/stores/useModalStore";
+import { useUserStore } from "@/stores/useUsersStore";
+import { formatCreatedAt } from "@/utils/date";
 
-const usersData = [
-  {
-    id: "1",
-    name: "Ahmed Abdo",
-    email: "ahmed@x.com",
-    avatar: "https://placehold.co/40x40/E8D2E7/4B2548?text=AA",
-    role: "Admin",
-    dateAdded: "Aug 1, 2025",
-  },
-];
 export default function UsersContainer() {
+  const { users } = useUserStore();
+  const { setShowAddUserModal } = useModalStore();
+
   return (
     <div className="w-full mx-auto border-none shadow-none rounded-none flex h-[90vh] flex-col">
       {/* Header with controls */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 py-4 border-b border-gray-200">
         <h2 className="text-xl font-semibold">
           All users{" "}
-          <span className="text-gray-500 font-normal">{usersData.length}</span>
+          <span className="text-gray-500 font-normal">{users.length}</span>
         </h2>
         <div className="flex items-center gap-4 w-full md:w-auto">
           {/* Search Input */}
@@ -43,7 +39,10 @@ export default function UsersContainer() {
             <Funnel className="h-4 w-4 text-gray-500" />
           </Button>
           {/* Add User Button */}
-          <Button className="flex items-center gap-2 bg-black text-white">
+          <Button
+            className="flex items-center gap-2 bg-black text-white"
+            onClick={() => setShowAddUserModal(true)}
+          >
             <PlusIcon className="h-4 w-4" />
             Add user
           </Button>
@@ -54,8 +53,8 @@ export default function UsersContainer() {
       <Table>
         <TableHeader>
           <TableRow className="bg-gray-50">
-            <TableHead className="w-[40%]">User</TableHead>
-            <TableHead className="w-[30%]">Role</TableHead>
+            <TableHead className="w-[50%]">User</TableHead>
+            <TableHead className="w-[20%]">Role</TableHead>
             <TableHead className="w-[20%]">Date added</TableHead>
             <TableHead className="w-[10%]"></TableHead>
           </TableRow>
@@ -66,13 +65,13 @@ export default function UsersContainer() {
       <div className="flex-1 overflow-y-auto">
         <Table>
           <TableBody>
-            {usersData.length === 0 ? (
+            {users.length === 0 ? (
               <p className="text-center py-10 text-gray-500">No users found.</p>
             ) : (
-              usersData.map((user) => (
+              users.map((user) => (
                 <TableRow key={user.id}>
                   {/* User name cell */}
-                  <TableCell className="flex w-[40%]">
+                  <TableCell className="flex w-[50%]">
                     <Image
                       src={user.avatar}
                       alt={user.name}
@@ -90,19 +89,24 @@ export default function UsersContainer() {
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="w-[30%]">
+                  <TableCell className="w-[20%]">
                     <div
-                      className={`bg-gray-200 text-gray-800 w-fit p-1 rounded ${
-                        user.role === "Admin" ? "bg-green-200" : "bg-red-200"
+                      className={`text-gray-800 w-fit p-1 rounded
+                      ${
+                        user.role === "Admin"
+                          ? "bg-green-200"
+                          : user.role === "Editor"
+                          ? "bg-yellow-200"
+                          : "bg-red-200"
                       }`}
                     >
                       {user.role}
                     </div>
                   </TableCell>
                   <TableCell className="text-gray-500 w-[20%]">
-                    {user.dateAdded}
+                    {formatCreatedAt(user.createdAt)}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="w-[10%]">
                     <EllipsisVertical className="text-gray-400 cursor-pointer" />
                   </TableCell>
                 </TableRow>
