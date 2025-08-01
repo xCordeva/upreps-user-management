@@ -1,5 +1,5 @@
 "use client";
-import { TOAST_CONFIG } from "@/lib/utils";
+import { showError } from "@/utils/toast";
 import { Button } from "./ui/button";
 import {
   Users,
@@ -10,16 +10,12 @@ import {
   Settings,
   PanelRightOpen,
 } from "lucide-react";
-import { toast } from "sonner";
 import { useSidebarStore } from "@/stores/useCollapseSidebarStore";
 import Image from "next/image";
 
 export default function Sidebar() {
   const handleButtonClicks = () => {
-    toast.error(
-      "This button is for UI purposes only and has no functionality.",
-      { ...TOAST_CONFIG.error }
-    );
+    showError("This button is for UI purposes only and has no functionality.");
   };
   const { isCollapsed, toggleSidebarMenu } = useSidebarStore();
   return (
