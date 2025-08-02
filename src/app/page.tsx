@@ -16,9 +16,9 @@ export default function Home() {
     setShowDeleteUserModal,
   } = useModalStore();
   return (
-    <div>
+    <div className="h-screen w-full bg-[#f2f2f2]">
       <Navbar />
-      <div className="flex h-screen w-full bg-[#f2f2f2]">
+      <div className="flex md:h-full">
         <div
           className={`${
             isCollapsed ? "w-10" : "w-50"

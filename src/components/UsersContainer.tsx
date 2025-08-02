@@ -35,7 +35,7 @@ export default function UsersContainer() {
   } = useFilterUsers(users);
 
   return (
-    <div className="w-full mx-auto border-none shadow-none rounded-none flex h-[90vh] flex-col">
+    <div className="w-full mx-auto border-none shadow-none rounded-none flex flex-col md:p-0 p-4 max-w-screen">
       {/* Header with controls */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 py-4 border-b border-gray-200">
         <h2 className="text-xl font-semibold">
@@ -44,53 +44,52 @@ export default function UsersContainer() {
             {displayedUsers.length}
           </span>
         </h2>
-        <div className="flex items-center gap-4 w-full md:w-auto">
+        <div className="flex md:flex-row flex-col items-center gap-4 w-full md:w-auto">
           {/* Search Input */}
-          <div className="relative flex-grow">
+          <div className="relative flex-grow w-full">
             <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
             <Input
               type="search"
               placeholder="Search user by email"
-              className="w-full pl-8"
+              className="w-full pl-8 bg-white"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
+          <div className="flex gap-4 md:flex-row w-full justify-end">
+            {/* Filter Dropdown Menu */}
+            <FilterDropdown
+              roleFilter={roleFilter}
+              setRoleFilter={setRoleFilter}
+              dateSort={dateSort}
+              setDateSort={setDateSort}
+            />
 
-          {/* Filter Dropdown Menu */}
-          <FilterDropdown
-            roleFilter={roleFilter}
-            setRoleFilter={setRoleFilter}
-            dateSort={dateSort}
-            setDateSort={setDateSort}
-          />
-
-          {/* Add User Button */}
-          <Button
-            className="flex items-center gap-2 bg-black text-white"
-            onClick={() => setShowAddUserModal(true)}
-          >
-            <PlusIcon className="h-4 w-4" />
-            Add user
-          </Button>
+            {/* Add User Button */}
+            <Button
+              className="flex items-center gap-2 bg-black text-white"
+              onClick={() => setShowAddUserModal(true)}
+            >
+              <PlusIcon className="h-4 w-4" />
+              Add user
+            </Button>
+          </div>
         </div>
       </div>
 
       {/* Users Table */}
-      <Table>
-        <TableHeader>
-          <TableRow className="bg-gray-50">
-            <TableHead className="w-[50%]">User</TableHead>
-            <TableHead className="w-[20%]">Role</TableHead>
-            <TableHead className="w-[20%]">Created At</TableHead>
-            <TableHead className="w-[10%]"></TableHead>
-          </TableRow>
-        </TableHeader>
-      </Table>
-      {/* Table body */}
-      {/* Recreating a table since the table element cannot contain divs as children */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="relative w-full overflow-x-auto overflow-y-auto flex-grow max-h-[calc(100vh-11rem)]">
         <Table>
+          {/* Table Header */}
+          <TableHeader className="bg-gray-50 sticky top-0 z-10">
+            <TableRow>
+              <TableHead className="w-[55%]">User</TableHead>
+              <TableHead className="w-[20%]">Role</TableHead>
+              <TableHead className="w-[20%]">Date added</TableHead>
+              <TableHead className="w-[5%]"></TableHead>
+            </TableRow>
+          </TableHeader>
+          {/* Table Body*/}
           <TableBody>
             {displayedUsers.length === 0 ? (
               <TableRow>
@@ -103,23 +102,24 @@ export default function UsersContainer() {
             ) : (
               displayedUsers.map((user) => (
                 <TableRow key={user.id}>
-                  {/* User name cell */}
-                  <TableCell className="flex w-[50%]">
-                    <Image
-                      src={user.avatar}
-                      alt={`${user.firstName} ${user.lastName} Avatar`}
-                      width={40}
-                      height={40}
-                      className="rounded-full"
-                      unoptimized
-                    />
-                    <div className="flex flex-col ml-2 w-fit">
-                      <span className="font-medium text-gray-900">
-                        {`${user.firstName} ${user.lastName}`}
-                      </span>
-                      <span className="text-sm text-gray-500">
-                        {user.email}
-                      </span>
+                  <TableCell className="w-[55%]">
+                    <div className="flex items-center">
+                      <Image
+                        src={user.avatar}
+                        alt={`${user.firstName} ${user.lastName} Avatar`}
+                        width={30}
+                        height={30}
+                        className="rounded-full"
+                        unoptimized
+                      />
+                      <div className="flex flex-col ml-2 w-fit">
+                        <span className="font-medium text-gray-900">
+                          {`${user.firstName} ${user.lastName}`}
+                        </span>
+                        <span className="text-sm text-gray-500">
+                          {user.email}
+                        </span>
+                      </div>
                     </div>
                   </TableCell>
                   <TableCell className="w-[20%]">
@@ -136,10 +136,10 @@ export default function UsersContainer() {
                       {user.role}
                     </div>
                   </TableCell>
-                  <TableCell className="text-gray-500 w-[20%]">
+                  <TableCell className="w-[20%]">
                     {formatCreatedAt(user.createdAt)}
                   </TableCell>
-                  <TableCell className="w-[10%]">
+                  <TableCell className="w-[5%]">
                     <EllipseMenu user={user} />
                   </TableCell>
                 </TableRow>
