@@ -13,16 +13,19 @@ export type User = {
 
 interface UserStore {
   users: User[];
+  loading: boolean;
   addUser: (user: User) => void;
   editUser: (updatedUser: User) => void;
   deleteUser: (id: string) => void;
   clearUsers: () => void;
+  setLoading: (loading: boolean) => void;
 }
 
 export const useUserStore = create<UserStore>()(
   persist(
     (set) => ({
       users: [],
+      loading: true,
       addUser: (user) =>
         set((state) => ({
           users: [...state.users, user],
@@ -38,9 +41,20 @@ export const useUserStore = create<UserStore>()(
           users: state.users.filter((user) => user.id !== id),
         })),
       clearUsers: () => set({ users: [] }),
+      setLoading: (loading) => set({ loading }),
     }),
     {
       name: "users-data", // local storage key
+      onRehydrateStorage: () => {
+        return (state) => {
+          if (state) {
+            state.setLoading(true);
+            setTimeout(() => {
+              state.setLoading(false);
+            }, 0);
+          }
+        };
+      },
     }
   )
 );

@@ -22,7 +22,7 @@ import { useFilterUsers } from "@/hooks/useFilterUsers";
 import UsersPagination from "./UsersPagination";
 
 export default function UsersContainer() {
-  const { users } = useUserStore();
+  const { users, loading } = useUserStore();
   const { setShowAddUserModal } = useModalStore();
 
   const {
@@ -99,7 +99,15 @@ export default function UsersContainer() {
           </TableHeader>
           {/* Table Body*/}
           <TableBody>
-            {displayedUsers.length === 0 ? (
+            {loading ? (
+              <TableRow>
+                <TableCell colSpan={4}>
+                  <p className="text-center py-10">
+                    <span className="loader"></span>
+                  </p>
+                </TableCell>
+              </TableRow>
+            ) : displayedUsers.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={4}>
                   <p className="text-center py-10 text-gray-500">
