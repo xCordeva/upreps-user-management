@@ -86,7 +86,7 @@ export default function UsersContainer() {
       </div>
 
       {/* Users Table */}
-      <div className="relative w-full overflow-x-auto overflow-y-auto flex-grow max-h-[calc(100vh-11rem)]">
+      <div className="relative w-full overflow-x-auto overflow-y-auto flex-grow h-[calc(100vh-15rem)]">
         <Table>
           {/* Table Header */}
           <TableHeader className="bg-gray-50 sticky top-0 z-10">
@@ -155,12 +155,12 @@ export default function UsersContainer() {
             )}
           </TableBody>
         </Table>
-        <UsersPagination
-          setCurrentPage={setCurrentPage}
-          currentPage={currentPage}
-          displayedUsers={displayedUsers}
-        />
       </div>
+      <UsersPagination
+        setCurrentPage={setCurrentPage}
+        currentPage={currentPage}
+        displayedUsers={displayedUsers}
+      />
     </div>
   );
 }

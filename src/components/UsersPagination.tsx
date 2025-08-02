@@ -17,14 +17,19 @@ type UsersPaginationProps = {
   setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
   displayedUsers: User[];
 };
+
 export default function UsersPagination({
   currentPage,
   setCurrentPage,
   displayedUsers,
 }: UsersPaginationProps) {
-  const totalPages = Math.ceil(displayedUsers.length / 10);
+  const usersPerPage = 10;
+  const totalUsers = displayedUsers.length;
+  const totalPages = Math.ceil(totalUsers / usersPerPage);
 
-  // func to generate pagination page numbers with ellipsis logic
+  const startIndex = (currentPage - 1) * usersPerPage + 1;
+  const endIndex = Math.min(currentPage * usersPerPage, totalUsers);
+
   const getPageNumbers = () => {
     const pages = [];
     if (totalPages <= 5) {
@@ -47,7 +52,7 @@ export default function UsersPagination({
 
   return (
     totalPages > 1 && (
-      <div className="mt-6 flex justify-center">
+      <div className="mt-4 flex flex-col md:flex-row items-center justify-between">
         <Pagination>
           <PaginationContent>
             <PaginationItem>
@@ -90,6 +95,10 @@ export default function UsersPagination({
             </PaginationItem>
           </PaginationContent>
         </Pagination>
+
+        <p className="text-gray-400 text-xs mt-3 md:mt-0 md:ml-4 text-nowrap">
+          Showing {startIndex} - {endIndex} of {totalUsers} results
+        </p>
       </div>
     )
   );
