@@ -19,6 +19,7 @@ import { formatCreatedAt } from "@/utils/date";
 import EllipseMenu from "./EllipseMenu";
 import FilterDropdown from "./FilterDropdown";
 import { useFilterUsers } from "@/hooks/useFilterUsers";
+import UsersPagination from "./UsersPagination";
 
 export default function UsersContainer() {
   const { users } = useUserStore();
@@ -33,6 +34,13 @@ export default function UsersContainer() {
     searchQuery,
     setSearchQuery,
   } = useFilterUsers(users);
+
+  const [currentPage, setCurrentPage] = React.useState(1);
+
+  const paginatedUsers = displayedUsers.slice(
+    (currentPage - 1) * 10,
+    currentPage * 10
+  );
 
   return (
     <div className="w-full mx-auto border-none shadow-none rounded-none flex flex-col md:p-0 p-4 max-w-screen">
@@ -100,7 +108,7 @@ export default function UsersContainer() {
                 </TableCell>
               </TableRow>
             ) : (
-              displayedUsers.map((user) => (
+              paginatedUsers.map((user) => (
                 <TableRow key={user.id}>
                   <TableCell className="w-[55%]">
                     <div className="flex items-center">
@@ -147,6 +155,11 @@ export default function UsersContainer() {
             )}
           </TableBody>
         </Table>
+        <UsersPagination
+          setCurrentPage={setCurrentPage}
+          currentPage={currentPage}
+          displayedUsers={displayedUsers}
+        />
       </div>
     </div>
   );
