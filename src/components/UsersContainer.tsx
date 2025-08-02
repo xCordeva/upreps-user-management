@@ -67,7 +67,13 @@ export default function UsersContainer() {
         <Table>
           <TableBody>
             {users.length === 0 ? (
-              <p className="text-center py-10 text-gray-500">No users found.</p>
+              <TableRow>
+                <TableCell colSpan={4}>
+                  <p className="text-center py-10 text-gray-500">
+                    No users found.
+                  </p>
+                </TableCell>
+              </TableRow>
             ) : (
               users.map((user) => (
                 <TableRow key={user.id}>
