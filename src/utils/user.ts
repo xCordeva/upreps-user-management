@@ -2,15 +2,14 @@ import { v4 as uuidv4 } from "uuid";
 
 // hex code colors to use as bg
 const avatarColors = [
-  "4B2548", // purple
-  "E8D2E7", // pinkish
-  "F5C9C8", // light pink
-  "C4D1E8", // light blue
-  "DEE8E9", // light cyan
-  "E8C9D5", // soft pink
-  "E8D6C9", // beige
-  "C9E8D0", // mint
-  "D6C9E8", // lavender
+  "FFC107", // Amber
+  "00BCD4", // Cyan
+  "9C27B0", // Purple
+  "FF5722", // Deep Orange
+  "4CAF50", // Green
+  "2196F3", // Blue
+  "E91E63", // Pink
+  "607D8B", // Blue Grey
 ];
 
 // func to choose a random bg color for each new user
@@ -19,16 +18,20 @@ function getRandomColor() {
   return avatarColors[index];
 }
 
-export function createUser(data: {
+export type UserData = {
   firstName: string;
   lastName: string;
   email: string;
   role: string;
-}) {
+};
+
+export function createUser(data: UserData) {
   const bgColor = getRandomColor();
+
   return {
     id: uuidv4(),
-    name: `${data.firstName} ${data.lastName}`,
+    firstName: data.firstName,
+    lastName: data.lastName,
     avatar: `https://placehold.co/40x40/${bgColor}/4B2548?text=${data.firstName[0]}${data.lastName[0]}`,
     email: data.email,
     role: data.role,

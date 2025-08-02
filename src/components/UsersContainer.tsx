@@ -81,7 +81,7 @@ export default function UsersContainer() {
                   <TableCell className="flex w-[50%]">
                     <Image
                       src={user.avatar}
-                      alt={user.name}
+                      alt={`${user.firstName} ${user.lastName} Avatar`}
                       width={40}
                       height={40}
                       className="rounded-full"
@@ -89,7 +89,7 @@ export default function UsersContainer() {
                     />
                     <div className="flex flex-col ml-2 w-fit">
                       <span className="font-medium text-gray-900">
-                        {user.name}
+                        {`${user.firstName} ${user.lastName}`}
                       </span>
                       <span className="text-sm text-gray-500">
                         {user.email}
