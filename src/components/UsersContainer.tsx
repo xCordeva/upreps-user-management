@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,16 +11,28 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { PlusIcon, SearchIcon, Funnel } from "lucide-react";
+import { PlusIcon, SearchIcon } from "lucide-react";
 import Image from "next/image";
 import { useModalStore } from "@/stores/useModalStore";
 import { useUserStore } from "@/stores/useUsersStore";
 import { formatCreatedAt } from "@/utils/date";
 import EllipseMenu from "./EllipseMenu";
+import FilterDropdown from "./FilterDropdown";
+import { useFilterUsers } from "@/hooks/useFilterUsers";
 
 export default function UsersContainer() {
   const { users } = useUserStore();
   const { setShowAddUserModal } = useModalStore();
+
+  const {
+    displayedUsers,
+    roleFilter,
+    setRoleFilter,
+    dateSort,
+    setDateSort,
+    searchQuery,
+    setSearchQuery,
+  } = useFilterUsers(users);
 
   return (
     <div className="w-full mx-auto border-none shadow-none rounded-none flex h-[90vh] flex-col">
@@ -26,19 +40,31 @@ export default function UsersContainer() {
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 py-4 border-b border-gray-200">
         <h2 className="text-xl font-semibold">
           All users{" "}
-          <span className="text-gray-500 font-normal">{users.length}</span>
+          <span className="text-gray-500 font-normal">
+            {displayedUsers.length}
+          </span>
         </h2>
         <div className="flex items-center gap-4 w-full md:w-auto">
           {/* Search Input */}
           <div className="relative flex-grow">
             <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
-            <Input type="search" placeholder="Search" className="w-full pl-8" />
+            <Input
+              type="search"
+              placeholder="Search user by email"
+              className="w-full pl-8"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
           </div>
-          {/* Filters Button */}
-          <Button variant="outline" className="flex items-center gap-2">
-            Filters
-            <Funnel className="h-4 w-4 text-gray-500" />
-          </Button>
+
+          {/* Filter Dropdown Menu */}
+          <FilterDropdown
+            roleFilter={roleFilter}
+            setRoleFilter={setRoleFilter}
+            dateSort={dateSort}
+            setDateSort={setDateSort}
+          />
+
           {/* Add User Button */}
           <Button
             className="flex items-center gap-2 bg-black text-white"
@@ -56,7 +82,7 @@ export default function UsersContainer() {
           <TableRow className="bg-gray-50">
             <TableHead className="w-[50%]">User</TableHead>
             <TableHead className="w-[20%]">Role</TableHead>
-            <TableHead className="w-[20%]">Date added</TableHead>
+            <TableHead className="w-[20%]">Created At</TableHead>
             <TableHead className="w-[10%]"></TableHead>
           </TableRow>
         </TableHeader>
@@ -66,7 +92,7 @@ export default function UsersContainer() {
       <div className="flex-1 overflow-y-auto">
         <Table>
           <TableBody>
-            {users.length === 0 ? (
+            {displayedUsers.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={4}>
                   <p className="text-center py-10 text-gray-500">
@@ -75,7 +101,7 @@ export default function UsersContainer() {
                 </TableCell>
               </TableRow>
             ) : (
-              users.map((user) => (
+              displayedUsers.map((user) => (
                 <TableRow key={user.id}>
                   {/* User name cell */}
                   <TableCell className="flex w-[50%]">
