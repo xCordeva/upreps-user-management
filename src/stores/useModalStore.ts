@@ -1,8 +1,9 @@
 import { create } from "zustand";
+import { User } from "./useUsersStore";
 
 interface ModalState {
-  showAddUserModal: boolean;
-  setShowAddUserModal: (value: boolean) => void;
+  showAddUserModal: boolean | User | null;
+  setShowAddUserModal: (value: boolean | User | null) => void;
   showDeleteUserModal: string | null;
   setShowDeleteUserModal: (value: string | null) => void;
 }

@@ -10,10 +10,7 @@ import { User } from "@/stores/useUsersStore";
 import { useModalStore } from "@/stores/useModalStore";
 
 export default function EllipseMenu({ user }: { user: User }) {
-  const { setShowDeleteUserModal } = useModalStore();
-  const handleEdit = (id: string) => {
-    console.log("edit");
-  };
+  const { setShowDeleteUserModal, setShowAddUserModal } = useModalStore();
 
   return (
     <DropdownMenu>
@@ -21,7 +18,7 @@ export default function EllipseMenu({ user }: { user: User }) {
         <EllipsisVertical className="text-gray-400 cursor-pointer" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-28">
-        <DropdownMenuItem onClick={() => handleEdit(user.id)}>
+        <DropdownMenuItem onClick={() => setShowAddUserModal(user)}>
           Edit
         </DropdownMenuItem>
         <DropdownMenuItem

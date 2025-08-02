@@ -18,14 +18,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useForm } from "react-hook-form";
-import { useUserStore } from "@/stores/useUsersStore";
+import { User, useUserStore } from "@/stores/useUsersStore";
 import { showError, showSuccess } from "@/utils/toast";
 import { createUser } from "@/utils/user";
 import { userValidation } from "@/utils/validation";
+import { useEffect } from "react";
 
 interface AddUserModalProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  open: boolean | User | null;
+  onOpenChange: (open: boolean | User | null) => void;
 }
 
 interface FormData {
@@ -36,44 +37,70 @@ interface FormData {
 }
 
 export function AddUserModal({ open, onOpenChange }: AddUserModalProps) {
-  const { addUser, users } = useUserStore();
+  const isEdit = typeof open === "object" && open !== null;
+
+  const user = isEdit ? (open as User) : null;
+  const { editUser, addUser, users } = useUserStore();
 
   const {
     register,
     handleSubmit,
     setValue,
-    trigger,
     reset,
     formState: { errors },
   } = useForm<FormData>();
 
-  const onSubmit = (data: FormData) => {
-    const newUser = createUser(data);
-
-    // check if email exists in users, show an error
-    if (users.some((user) => user.email === data.email)) {
-      showError("This email already exists");
-      return;
+  useEffect(() => {
+    if (isEdit && user) {
+      setValue("firstName", user.firstName);
+      setValue("lastName", user.lastName);
+      setValue("email", user.email);
+      setValue("role", user.role);
+    } else {
+      reset();
     }
+  }, [isEdit, user, setValue, reset]);
 
-    addUser(newUser);
+  const onSubmit = (data: FormData) => {
+    const isEmailTaken = users.some(
+      (u) => u.email === data.email && u.id !== user?.id
+    );
+
+    if (isEmailTaken) {
+      showError(
+        "Sorry, this email is associated with another user. Please try a different email."
+      );
+      return;
+    } else if (isEdit && user) {
+      const updatedUser: User = {
+        ...user,
+        ...data,
+      };
+      editUser(updatedUser);
+      showSuccess("User updated successfully.");
+    } else {
+      const newUser = createUser(data);
+
+      addUser(newUser);
+      showSuccess("User added successfully.");
+    }
 
     setValue("role", "");
     reset();
-    onOpenChange(false);
-    showSuccess("User added successfully.");
+    onOpenChange(null);
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={!!open} onOpenChange={(o) => !o && onOpenChange(null)}>
       <DialogContent className="sm:max-w-md max-h-[95vh] overflow-y-auto flex flex-col rounded-lg">
         <DialogHeader>
           <DialogTitle className="flex items-center justify-center gap-2">
-            Add New User
+            {isEdit ? "Edit User" : "Add New User"}
           </DialogTitle>
           <DialogDescription className="text-center mb-4">
-            Enter the user&apos;s details below to create a new account and
-            assign a role.
+            {isEdit
+              ? "Enter the user's details below to create a new account and assign a role."
+              : "Modify the account details below to update user information and assign a new role."}
           </DialogDescription>
         </DialogHeader>
 
@@ -128,9 +155,9 @@ export function AddUserModal({ open, onOpenChange }: AddUserModalProps) {
           <div>
             <Label htmlFor="role">Role</Label>
             <Select
+              defaultValue={isEdit ? user?.role : undefined}
               onValueChange={(value) => {
-                setValue("role", value);
-                trigger("role");
+                setValue("role", value, { shouldValidate: true });
               }}
             >
               <SelectTrigger id="role" className="w-full">
@@ -150,7 +177,7 @@ export function AddUserModal({ open, onOpenChange }: AddUserModalProps) {
           <input type="hidden" {...register("role", userValidation.role)} />
 
           <Button type="submit" className="mt-4 w-full">
-            Add User
+            {isEdit ? "Edit User" : "Add User"}
           </Button>
         </form>
       </DialogContent>
